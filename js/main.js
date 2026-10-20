@@ -117,8 +117,8 @@
   /* ---------- scene states ---------- */
   var HUB = window.World ? window.World.HUB : { lat: 20.6, lon: 78.9 };
   var STATES = {
-    hero: function () { return { gx: mob() ? -1.5 : 0, gy: mob() ? -1.7 : -3.1, scale: mob() ? 2.35 : 3.05, camZ: 5.2, faceLat: HUB.lat, faceLon: HUB.lon - 12, tilt: -1.35, dots: 1, arcs: 0.55, arcDraw: 1, route: 0, active: 0, hub: 0.6, atmo: 1, burst: 0, runway: 1 }; },
-    mission: function () { return { gx: 0, gy: mob() ? -0.9 : -1.15, scale: 1.55, camZ: 5.2, faceLat: HUB.lat + 18, faceLon: HUB.lon, tilt: 0.55, dots: 0.85, arcs: 0.9, arcDraw: 1, route: 0, active: 0, hub: 0.7, atmo: 1.2, burst: 0, runway: 0, plane: "takeoff", planeT: 1 }; },
+    hero: function () { return { gx: mob() ? -1.5 : 0, gy: mob() ? -1.7 : -3.1, scale: mob() ? 2.35 : 3.05, camZ: 5.2, faceLat: HUB.lat, faceLon: HUB.lon - 12, tilt: -1.35, dots: 1, arcs: 0.28, arcDraw: 1, route: 0, active: 0, hub: 0.5, atmo: 0.8, burst: 0, runway: 1 }; },
+    mission: function () { return { gx: 0, gy: mob() ? -0.9 : -1.15, scale: 1.55, camZ: 5.2, faceLat: HUB.lat + 18, faceLon: HUB.lon, tilt: 0.55, dots: 0.85, arcs: 0.9, arcDraw: 1, route: 0, active: 0, hub: 0.7, atmo: 0.9, burst: 0, runway: 0, plane: "takeoff", planeT: 1 }; },
     preflight: function () { return { gx: mob() ? -3 : -1.65, gy: mob() ? -1.4 : -3.65, scale: mob() ? 2.35 : 3.6, camZ: 5.2, faceLat: HUB.lat, faceLon: HUB.lon - 12, tilt: -1.35, dots: 1, arcs: 0.3, arcDraw: 1, route: 0, active: 0, hub: 0.4, atmo: 0.9, burst: 0, runway: 1, plane: "runway", planeT: 0 }; },
     tour: function () {
       // fit the globe into the band between the traceroute window and the card, so nothing covers it
@@ -129,7 +129,7 @@
       return { gx: 0, gy: (H / 2 - cy) / unit, scale: sc, camZ: 5.2, tilt: 0.0, dots: 1, arcs: 0.35, arcDraw: 1, route: 0, active: 1, hub: 0.6, atmo: 1, burst: 0, runway: 0, plane: "tour" }; },
     route: function () { return { runway: 0, gx: mob() ? 0 : 0.85, gy: mob() ? 0.55 : -0.02, scale: mob() ? 0.9 : 1.05, camZ: 5.2, tilt: 0.1, dots: 1, arcs: 0.12, arcDraw: 1, route: 1, active: 0, hub: 0.6, atmo: 1, burst: 0, plane: "route" }; },
     learn: function () { return { runway: 0, gx: 0, gy: 0.15, scale: 0.95, camZ: 8.5, faceLat: 15, faceLon: 20, tilt: 0.2, dots: 0.32, arcs: 0.4, arcDraw: 1, route: 0, active: 0, hub: 0.3, atmo: 0.5, burst: 0, plane: "park" }; },
-    board: function () { return { runway: 0, gx: 0, gy: mob() ? 0.25 : -0.28, scale: mob() ? 0.95 : 1.15, camZ: 5.2, faceLat: HUB.lat, faceLon: HUB.lon, tilt: 0.25, dots: 1, arcs: 1, arcDraw: 1, route: 0, active: 0, hub: 1, atmo: 1.3, burst: 1, plane: "takeoff" }; }
+    board: function () { return { runway: 0, gx: 0, gy: mob() ? 0.25 : -0.28, scale: mob() ? 0.95 : 1.15, camZ: 5.2, faceLat: HUB.lat, faceLon: HUB.lon, tilt: 0.25, dots: 1, arcs: 1, arcDraw: 1, route: 0, active: 0, hub: 1, atmo: 1, burst: 1, plane: "takeoff" }; }
   };
   var spin = 0;
   window.__uw = { set: function (o) { set(o); }, states: STATES, world: function () { return world; } };
@@ -336,6 +336,26 @@
   if (!reduce) $$(".badge").forEach(function (b, i) {
     gsap.fromTo(b, { rotation: i ? 1.6 : -1.6 }, { rotation: i ? -0.8 : 0.8, ease: "none", scrollTrigger: { trigger: "#crew", start: "top bottom", end: "bottom top", scrub: 1 } });
   });
+
+  // buttery scrolling: wheel input eases toward its target instead of jumping (desktop pointers only)
+  if (!reduce && matchMedia("(pointer:fine)").matches) {
+    var sTarget = scrollY, sCur = scrollY, sRaf = null;
+    var maxS = function () { return document.documentElement.scrollHeight - innerHeight; };
+    var sTick = function () {
+      sCur += (sTarget - sCur) * 0.085; if (Math.abs(sTarget - sCur) < 0.4) sCur = sTarget;
+      window.scrollTo(0, sCur); sRaf = sCur !== sTarget ? requestAnimationFrame(sTick) : null;
+    };
+    window.addEventListener("wheel", function (e) {
+      if (e.ctrlKey || root.classList.contains("pre")) return;
+      var nest = e.target.closest && e.target.closest(".tour-nav,.board,.lt-out,.nav-sheet");
+      if (nest && Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      e.preventDefault();
+      if (!sRaf) sCur = scrollY;
+      sTarget = Math.max(0, Math.min(maxS(), (sRaf ? sTarget : scrollY) + e.deltaY * (e.deltaMode === 1 ? 32 : 1)));
+      if (!sRaf) sRaf = requestAnimationFrame(sTick);
+    }, { passive: false });
+    document.addEventListener("click", function (e) { var a = e.target.closest && e.target.closest('a[href^="#"]'); if (!a) return; var t = document.querySelector(a.getAttribute("href")); if (!t) return; e.preventDefault(); if (!sRaf) sCur = scrollY; sTarget = Math.min(maxS(), t.getBoundingClientRect().top + scrollY); if (!sRaf) sRaf = requestAnimationFrame(sTick); });
+  }
 
   var globeShown = false;
   function showGlobe() {

@@ -10,8 +10,8 @@
 :root{
   --space:#06070A; --panel:#0C0E12; --panel-2:#12151B; --line:#1C2027; --line-2:#2A303A;
   --fg:#ECE9E2; --fg-2:#A9AEB7; --dim:#6E747F; --red:#F20A14; --red-2:#FF3B40; --ok:#7FD39A;
-  --display:"Inter Display","Inter",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
-  --body:"Geist",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --display:"Sora","Inter Display","Inter",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --body:"Sora","Geist",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
   --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
   --gl:max(20px, env(safe-area-inset-left,0px)); --gr:max(20px, env(safe-area-inset-right,0px));
   --ease:cubic-bezier(.16,1,.3,1);
@@ -506,3 +506,28 @@ p,li{text-wrap:pretty}
   .tour-card .tc-topics li{font-size:11px;padding:5px 8px}
 }
 @media (max-width:1280px) and (min-width:768px){ .trace-win .tour-nav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none} .trace-win .tour-nav button{white-space:nowrap} }
+
+/* =========== CALM PASS: Sora, flat colour, fewer glows =========== */
+body{font-weight:300;letter-spacing:-.01em;font-feature-settings:normal}
+.hero-h,.h2,.block-head h3,.tc-title,.cm-title,.mv-plain,.gate-v,.gv i,.ht-word,.tw-h,.pass h3,.badge h3,.lab-name{
+  background:none;-webkit-background-clip:border-box;background-clip:border-box;color:#F3F1EC;-webkit-text-fill-color:currentColor;filter:none;text-shadow:none}
+.hero-h{font-weight:600;letter-spacing:-.045em;line-height:1.02}
+.h2{font-weight:600;letter-spacing:-.04em;line-height:1.04}
+.ht-word{font-weight:700;letter-spacing:-.055em}
+.mv-plain,.tc-title,.cm-title,.block-head h3,.pass h3,.badge h3{font-weight:600;letter-spacing:-.03em}
+.hero-sub,.sub,.tc-line,.pass-hook,.bt,.mv-plain{font-weight:300}
+.hero-sub,.sub,.tc-line,.pass-hook,.bt{color:#A7ACB5}
+.btn{font-weight:500;letter-spacing:0}
+.btn-red,.btn-red:hover{box-shadow:none}
+.btn-red:hover{background:#d80912}
+.eyebrow{background:rgba(255,255,255,.03);box-shadow:none}
+.mv-card{background:rgba(10,12,16,.82);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.mv-card::before{display:none}
+.mv-k::before,.ht-box::after{box-shadow:none}
+.mv-code{border-left-color:rgba(242,10,20,.7)}
+.tour-card::before{box-shadow:none;opacity:.7}
+.tc-art,.block-art::after{box-shadow:none}
+.pass::after{display:none}
+.hero-pin::after{height:34%;background:linear-gradient(0deg,rgba(6,7,10,.5),transparent)}
+.pf-panel,.trace-win,.tour-card{background:rgba(9,11,15,.9);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.flap{font-weight:600}

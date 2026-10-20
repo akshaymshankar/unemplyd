@@ -118,7 +118,7 @@
     "}"
   ].join("\n");
   var ATMO_VS = "varying vec3 vN; void main(){ vN = normalize(normalMatrix * normal); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }";
-  var ATMO_FS = "uniform float uOpacity; varying vec3 vN; void main(){ float i = pow(max(0.0, 0.66 - dot(vN, vec3(0.0,0.0,1.0))), 4.0) * 1.6; gl_FragColor = vec4(vec3(0.52,0.6,0.85) * i, i * uOpacity * 0.85); }";
+  var ATMO_FS = "uniform float uOpacity; varying vec3 vN; void main(){ float i = pow(max(0.0, 0.66 - dot(vN, vec3(0.0,0.0,1.0))), 4.0) * 1.6; gl_FragColor = vec4(vec3(0.5,0.58,0.8) * i, i * uOpacity * 0.42); }";
   var BASE_FS = "varying vec3 vN; void main(){ float f = pow(1.0 - max(dot(vN, vec3(0.0,0.0,1.0)), 0.0), 2.4); gl_FragColor = vec4(vec3(0.028,0.034,0.048) + vec3(0.10,0.13,0.2) * f, 1.0); }";
 
   /* ---------------- data */
@@ -377,12 +377,20 @@
     // Twin-engine airliner after the storyboard turnaround (3D-01): soft white shell,
     // fine white wireframe, red fin, cabin windows, glowing nav / strobe / landing lights.
     var P = this.plane = new THREE.Group();
-    var white = new THREE.MeshStandardMaterial({ color: 0xf2f3f6, roughness: 0.32, metalness: 0.18, emissive: 0x0b0c0f });
+    var white = new THREE.MeshStandardMaterial({ color: 0xf4f5f7, roughness: 0.42, metalness: 0.08, emissive: 0x0b0c0f });
+    // tail livery: red "u." on the white fin (fin shape spans x -0.088..0, y 0..0.088)
+    var tc = document.createElement("canvas"); tc.width = tc.height = 256; var tx = tc.getContext("2d");
+    tx.fillStyle = "#f4f5f7"; tx.fillRect(0, 0, 256, 256);
+    var drawU = function () { tx.fillStyle = "#f4f5f7"; tx.fillRect(0, 0, 256, 256); tx.fillStyle = "#F20A14"; tx.font = "700 118px Sora, Inter, Arial, sans-serif"; tx.fillText("u", 34, 196); tx.beginPath(); tx.arc(126, 186, 12, 0, Math.PI * 2); tx.fill(); };
+    drawU();
+    var finTex = new THREE.CanvasTexture(tc);
+    if (document.fonts && document.fonts.load) document.fonts.load("700 118px Sora").then(function () { drawU(); finTex.needsUpdate = true; }).catch(function () {}); finTex.repeat.set(1 / 0.088, 1 / 0.088); finTex.offset.set(1, 0); finTex.wrapS = finTex.wrapT = THREE.ClampToEdgeWrapping;
+    var finMat = new THREE.MeshStandardMaterial({ map: finTex, roughness: 0.42, metalness: 0.08, emissive: 0x000000 });
     var red = new THREE.MeshStandardMaterial({ color: 0xf20a14, roughness: 0.38, metalness: 0.15, emissive: 0x2a0000 });
     var glass = new THREE.MeshStandardMaterial({ color: 0x0a0d14, roughness: 0.1, metalness: 0.8, emissive: 0x000000 });
     var engineM = new THREE.MeshStandardMaterial({ color: 0xd9dce2, roughness: 0.25, metalness: 0.45, emissive: 0x000000 });
     var dark = new THREE.MeshBasicMaterial({ color: 0x07080b });
-    this.planeParts = { cockpit: glass, engines: engineM, wings: white, tail: red };
+    this.planeParts = { cockpit: glass, engines: engineM, wings: white, tail: finMat };
     var V2 = THREE.Vector2;
     function lathe(pts, seg, mat) { var g = new THREE.LatheGeometry(pts.map(function (p) { return new V2(p[0], p[1]); }), seg); g.rotateX(Math.PI / 2); return new THREE.Mesh(g, mat); }
     // fuselage: tail cone → cabin barrel → rounded nose (axis = +z nose)
@@ -414,12 +422,12 @@
       });
       return out;
     }
-    wing({ span: 0.225, root: 0.095, tip: 0.024, sweep: 0.085, y: -0.012, z: 0.06, t: 0.0045, mat: white, dihedral: 0.07, winglet: true, wingletMat: red }).forEach(function (m) { P.add(m); });
+    wing({ span: 0.225, root: 0.095, tip: 0.024, sweep: 0.085, y: -0.012, z: 0.06, t: 0.0045, mat: white, dihedral: 0.07, winglet: true, wingletMat: white }).forEach(function (m) { P.add(m); });
     wing({ span: 0.078, root: 0.045, tip: 0.017, sweep: 0.036, y: 0.006, z: -0.158, t: 0.003, mat: white, dihedral: 0.05 }).forEach(function (m) { P.add(m); });
     // vertical fin (red), swept
     var fs = new THREE.Shape(); fs.moveTo(0, 0); fs.lineTo(-0.062, 0.088); fs.lineTo(-0.088, 0.088); fs.lineTo(-0.085, 0); fs.lineTo(0, 0);
     var fg = new THREE.ExtrudeGeometry(fs, { depth: 0.004, bevelEnabled: true, bevelThickness: 0.001, bevelSize: 0.001, bevelSegments: 1 });
-    fg.rotateY(-Math.PI / 2); fg.translate(0.002, 0.018, -0.118); P.add(new THREE.Mesh(fg, red));
+    fg.rotateY(-Math.PI / 2); fg.translate(0.002, 0.018, -0.118); P.add(new THREE.Mesh(fg, finMat));
     // engines: nacelle + dark intake + pylon
     var self = this; this.engGlow = [];
     [-0.078, 0.078].forEach(function (x) {
@@ -429,7 +437,7 @@
       var py = new THREE.Mesh(new THREE.BoxGeometry(0.003, 0.016, 0.04), white); py.position.set(x, -0.018, 0.05); P.add(py);
     });
     // wireframe overlay: the storyboard's white edge lines
-    var edgesMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.22 });
+    var edgesMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.07 });
     P.children.slice().forEach(function (m) {
       if (!m.geometry || m.isInstancedMesh) return;
       var e = new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry, 30), edgesMat);
@@ -592,7 +600,7 @@
     parts.wings.emissive.setRGB(0.045 + 0.1 * clamp01(pf - 2), 0.047 + 0.1 * clamp01(pf - 2), 0.06 + 0.11 * clamp01(pf - 2));
     var nav = clamp01(pf - 3);
     this.navL.material.opacity = 0.25 + nav * 0.75; this.navR.material.opacity = 0.25 + nav * 0.75;
-    parts.tail.emissive.setRGB(0.6 * clamp01(pf - 4), 0, 0);
+    parts.tail.emissive.setRGB(0.18 * clamp01(pf - 4), 0.02 * clamp01(pf - 4), 0.02 * clamp01(pf - 4));
     this.strobe.material.opacity = (Math.sin(tm * 9) > 0.85 ? 1 : 0.05) * (0.35 + nav * 0.65);
     this.landing.material.opacity = (T.plane === "approach" || T.plane === "takeoff") ? 0.9 : 0.25;
 
