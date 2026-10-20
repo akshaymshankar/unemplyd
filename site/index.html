@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en" class="pre">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>unemplyd. — Build beyond the classroom</title>
+<meta name="description" content="unemplyd. turns classroom knowledge into the skills the industry hires for: software engineering, AI, labs, projects and careers.">
+<meta name="theme-color" content="#06070A">
+<link rel="icon" type="image/svg+xml" href="brand/unemplyd-icon-dark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@300..700&display=swap">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<!-- @@INLINE_START@@ -->
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- WebGL world (fixed, behind content) -->
+<canvas id="world" class="world" aria-hidden="true"></canvas>
+<div class="world-fallback" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<!-- ================= LOADER ================= -->
+<div class="loader" id="loader" aria-hidden="true">
+  <canvas id="graph" class="graph"></canvas>
+  <ol class="loader-log" id="loaderLog"></ol>
+  <button class="skip-intro" id="skipIntro" type="button">skip <kbd>esc</kbd></button>
+</div>
+
+<!-- ================= NAV ================= -->
+<header class="nav" id="nav">
+  <a class="nav-logo logo-slot" href="#top" aria-label="unemplyd. home">unemplyd<span class="dot">.</span></a>
+  <nav class="nav-links" aria-label="Sections">
+    <a href="#mission">~/mission</a><a href="#world-tour">~/world</a><a href="#route">~/route</a><a href="#learn">~/learn</a><a href="#projects">~/projects</a><a href="#crew">~/crew</a>
+  </nav>
+  <a class="btn btn-red nav-cta" data-cta href="#learn">Board now <span aria-hidden="true">→</span></a>
+  <button class="nav-menu" id="navMenu" type="button" aria-expanded="false" aria-controls="navSheet">ls</button>
+  <nav class="nav-sheet" id="navSheet" aria-label="Sections" hidden>
+    <a href="#mission">~/mission</a><a href="#world-tour">~/world</a><a href="#route">~/route</a><a href="#learn">~/learn</a><a href="#projects">~/projects</a><a href="#crew">~/crew</a><a href="#learn" class="red">Board now →</a>
+  </nav>
+</header>
+
+<main id="main">
+
+<!-- ================= 01 HERO ================= -->
+<section class="hero" id="top" data-scene="hero">
+  <div class="hero-pin">
+    <div class="hub-tag" id="hubTag" aria-hidden="true">
+      <p class="ht-word" id="htWord">unemplyd.</p>
+      <div class="ht-gates">
+        <p class="ht-g"><span class="gk">GATE O</span><span class="gv"><b>O</b><i>pportunities</i></span></p>
+        <p class="ht-g"><span class="gk">GATE E</span><span class="gv"><b>E</b><i>xperience</i></span></p>
+      </div>
+    </div>
+    <div class="hero-inner">
+      <div class="hero-a">
+        <p class="hero-kicker reveal"><span class="pr" aria-hidden="true">&gt;</span> build beyond the classroom</p>
+        <h1 class="hero-h reveal">The World of<br>Software Engineering.</h1>
+      </div>
+      <div class="hero-b">
+        <p class="hero-sub reveal">The world runs on software. Turn what you learn in class into skills the industry hires for, with real tools, real projects and people who've been stuck exactly where you are.</p>
+        <p class="sr-only">unemplyd. Gate O: Opportunities. Gate E: Experience.</p>
+        <div class="cta reveal">
+          <a class="btn btn-red" data-cta href="#learn">Board now <span aria-hidden="true">→</span></a>
+          <a class="btn btn-ghost" href="#route">See the route</a>
+        </div>
+      </div>
+    </div>
+    <p class="scroll-hint reveal" aria-hidden="true">scroll to take off <span>↓</span></p>
+  </div>
+</section>
+
+<!-- ================= 02 MISSION ================= -->
+<section class="mission" id="mission" data-scene="mission">
+  <div class="pin">
+    <div class="hudframe" aria-hidden="true"><i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i></div>
+    <div class="mission-inner">
+      <p class="eyebrow"><span class="pr" aria-hidden="true">&gt;</span> cat mission.ts vision.ts</p>
+      <div class="mv">
+        <article class="mv-card" id="missionCard">
+          <p class="mv-k">MISSION</p>
+          <pre class="mv-code" data-type>// Learn by building.
+// Debug by failing. Ship anyway.</pre>
+          <p class="mv-plain">We teach you to build real things, mess up, fix them and keep going. That's how engineers are made.</p>
+        </article>
+        <article class="mv-card" id="visionCard">
+          <p class="mv-k">VISION</p>
+          <pre class="mv-code" data-type>while (!ready) { build(); break(); fix(); }
+return engineer;</pre>
+          <p class="mv-plain">Keep building until you're job-ready. Then walk into your career already ready.</p>
+        </article>
+      </div>
+      <p class="hud mv-foot">ALT 35,000 ft · DEST: <span class="red">your first offer</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 03 PRE-FLIGHT ================= -->
+<section class="preflight" id="preflight" data-scene="preflight">
+  <div class="pin">
+    <div class="pf-inner">
+      <div class="pf-head">
+        <p class="eyebrow"><span class="pr" aria-hidden="true">&gt;</span> run preflight --beliefs</p>
+        <h2 class="h2">Everything we stand for, checked.</h2>
+      </div>
+      <div class="pf-panel">
+        <p class="pf-title">SYSTEMS CHECK</p>
+        <ol class="checks" id="checks">
+          <li><span class="st">[ ]</span><span class="ln">Knowledge creates possibilities.</span><span class="sys">cockpit</span></li>
+          <li><span class="st">[ ]</span><span class="ln">Experience creates confidence.</span><span class="sys">engines</span></li>
+          <li><span class="st">[ ]</span><span class="ln">Engineering is learned by building.</span><span class="sys">wings</span></li>
+          <li><span class="st">[ ]</span><span class="ln">Curiosity creates innovation.</span><span class="sys">nav lights</span></li>
+          <li><span class="st">[ ]</span><span class="ln">Consistency builds careers.</span><span class="sys">tail</span></li>
+          <li><span class="st">[ ]</span><span class="ln">The future belongs to lifelong learners.</span><span class="sys">runway</span></li>
+        </ol>
+        <p class="pf-sum mono" id="pfSum"><span id="pfCount">0</span>/6 passed · 0 failed · <span id="pfClear">holding</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 04 WORLD TOUR ================= -->
+<section class="tour" id="world-tour" data-scene="tour">
+  <div class="pin">
+    <div class="trace-win">
+      <div class="tw-bar"><i></i><i></i><i></i><span>~ traceroute --world</span></div>
+      <div class="tw-body">
+        <h2 class="tw-h">Interconnected pillars, not a course catalogue.</h2>
+        <ol class="tour-nav" id="tourNav" aria-label="Pillars"></ol>
+      </div>
+    </div>
+    <div class="tour-card" id="tourCard" aria-live="polite">
+      <figure class="tc-art"><img id="tcArt" alt="" decoding="async"></figure>
+      <div class="tc-a">
+        <h3 class="tc-title" id="tcTitle">Programming</h3>
+        <p class="tc-line" id="tcLine">The instincts every engineer builds first.</p>
+        <ul class="tc-topics" id="tcTopics"></ul>
+      </div>
+      <div class="tc-b">
+        <pre class="tc-code" id="tcCode"></pre>
+        <p class="tc-plain" id="tcPlain"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 05 ROUTE ================= -->
+<section class="route" id="route" data-scene="route">
+  <div class="route-inner">
+    <header class="route-head">
+      <p class="eyebrow"><span class="pr" aria-hidden="true">&gt;</span> git log --reverse --oneline</p>
+      <h2 class="h2">From classroom to career,<br>one deliberate step at a time.</h2>
+      <p class="sub">Twelve steps. Two of them unlock what "unemployed" was missing.</p>
+    </header>
+    <ol class="commits" id="commits"></ol>
+  </div>
+</section>
+
+<!-- ================= 06 LEARN ================= -->
+<section class="learn" id="learn" data-scene="learn">
+  <div class="learn-inner">
+    <header class="sec-head">
+      <p class="eyebrow"><span class="pr" aria-hidden="true">&gt;</span> ls ./learn</p>
+      <h2 class="h2">Courses. Theory. Labs.</h2>
+    </header>
+
+    <div class="block" id="courses">
+      <figure class="block-art"><img data-media="courses" alt="" loading="lazy" decoding="async"></figure>
+      <div class="block-head"><h3>Courses</h3><code>ls ./courses</code><p>Pick your course. We'll get you there.</p></div>
+      <div class="board" role="table" aria-label="Course departures">
+        <div class="board-row board-th" role="row"><span role="columnheader">ROUTE</span><span role="columnheader">DESTINATION</span><span role="columnheader">DURATION</span></div>
+        <div id="boardRows"></div>
+      </div>
+      <p class="note mono">// sample routes · real catalogue to be added</p>
+    </div>
+
+    <div class="block" id="theory">
+      <figure class="block-art"><img data-media="theory" alt="" loading="lazy" decoding="async"></figure>
+      <div class="block-head"><h3>Theory</h3><code>man engineering</code><p>Understand why things work, not just how.</p></div>
+      <div class="diagrams">
+        <figure class="dg"><svg viewBox="0 0 200 130" aria-hidden="true"><path class="ax" d="M20 110H190M20 110V10"/><path class="c1" d="M20 108C80 106 140 100 190 96"/><path class="c2" d="M20 108C80 98 140 70 190 40"/><path class="c3" d="M20 108C70 100 110 60 130 10"/><text x="150" y="92">O(log n)</text><text x="150" y="36">O(n)</text><text x="112" y="20">O(n²)</text></svg><figcaption>Big-O · how code scales</figcaption></figure>
+        <figure class="dg"><svg viewBox="0 0 200 130" aria-hidden="true"><path class="ax" d="M40 10V125M160 10V125"/><text x="22" y="8">client</text><text x="142" y="8">server</text><path class="c2 arw" d="M40 30L160 45"/><path class="c1 arw" d="M160 60L40 75"/><path class="c3 arw" d="M40 90L160 105"/><text x="80" y="32">SYN</text><text x="74" y="62">SYN-ACK</text><text x="84" y="92">ACK</text></svg><figcaption>TCP handshake · how machines agree</figcaption></figure>
+        <figure class="dg"><svg viewBox="0 0 200 130" aria-hidden="true"><rect class="ax" x="20" y="14" width="70" height="100"/><rect class="c3" x="20" y="74" width="70" height="40"/><rect class="ax" x="110" y="14" width="70" height="100"/><rect class="c1" x="118" y="22" width="26" height="18"/><rect class="c1" x="150" y="46" width="22" height="18"/><rect class="c1" x="122" y="78" width="40" height="18"/><text x="40" y="70">stack</text><text x="130" y="122">heap</text></svg><figcaption>Memory · stack vs heap</figcaption></figure>
+        <figure class="dg"><svg viewBox="0 0 200 130" aria-hidden="true"><path class="ax" d="M100 20L60 55M100 20L140 55M60 55L40 95M60 55L80 95M140 55L160 95"/><path class="c3" d="M100 20L140 55L160 95"/><circle class="n" cx="100" cy="20" r="9"/><circle class="n" cx="60" cy="55" r="9"/><circle class="n" cx="140" cy="55" r="9"/><circle class="n" cx="40" cy="95" r="9"/><circle class="n" cx="80" cy="95" r="9"/><circle class="n hot" cx="160" cy="95" r="9"/></svg><figcaption>Binary search tree · find in log n</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="block" id="labs">
+      <figure class="block-art"><img data-media="labs" alt="" loading="lazy" decoding="async"></figure>
+      <div class="block-head"><h3>Labs</h3><code>docker run --rm you</code><p>Practise in the same tools engineers use at work. Tap any tool.</p></div>
+      <div class="labs">
+        <div class="lab-grid" id="labGrid" role="list"></div>
+        <div class="lab-term" aria-live="polite"><div class="lt-bar"><i></i><i></i><i></i><span id="ltTitle">zsh</span></div><pre id="ltOut"></pre></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 07 PROJECTS ================= -->
+<section class="projects" id="projects" data-scene="projects">
+  <div class="learn-inner">
+    <header class="sec-head">
+      <p class="eyebrow"><span class="pr" aria-hidden="true">&gt;</span> git log --merges</p>
+      <h2 class="h2">Proof of work,<br>not just proof of concept.</h2>
+    </header>
+    <div class="passes" id="passes"></div>
+  </div>
+</section>
+
+<!-- ================= 08 CREW ================= -->
+<section class="crew" id="crew" data-scene="crew">
+  <div class="learn-inner">
+    <header class="sec-head">
+      <p class="eyebrow"><span class="pr" aria-hidden="true">&gt;</span> git shortlog -sn</p>
+      <h2 class="h2">Built by people<br>who do the work.</h2>
+    </header>
+    <div class="badges">
+      <article class="badge">
+        <div class="badge-top"><span class="logo-slot small">unemplyd<span class="dot">.</span></span><span class="role">CAPTAIN</span></div>
+        <div class="ascii" data-name="AKSHAY" aria-hidden="true"></div>
+        <h3>Akshay</h3>
+        <p class="bt">Technical &amp; Educational Lead</p>
+        <ul class="creds"><li>Associate Engineer · Caterpillar</li><li>ex-Software Development Intern · Texas Instruments</li><li>ex-Intern · Schneider Electric</li><li>1,000+ DSA problems on LeetCode</li></ul>
+        <div class="barcode" aria-hidden="true"></div>
+      </article>
+      <article class="badge">
+        <div class="badge-top"><span class="logo-slot small">unemplyd<span class="dot">.</span></span><span class="role">FIRST OFFICER</span></div>
+        <div class="ascii" data-name="ANUSH" aria-hidden="true"></div>
+        <h3>Anush Karthikeyan</h3>
+        <p class="bt">Post-Production &amp; Content Lead</p>
+        <ul class="creds"><li>Leads post-production and content delivery</li><li>Turns raw course content into polished lessons</li><li>On time, at the quality bar the depth deserves</li></ul>
+        <div class="barcode" aria-hidden="true"></div>
+      </article>
+    </div>
+    <p class="signoff mono">// built by engineers who learned more from 2 a.m. bugs than lectures.</p>
+  </div>
+</section>
+
+<!-- ================= 09 BOARD ================= -->
+<section class="outro" id="outro" data-scene="board" aria-label="Take-off">
+  <div class="outro-inner">
+    <div class="outro-logo logo-slot">unemplyd<span class="dot">.</span></div>
+    <p class="outro-sub">Building engineers. Building impact.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <span class="logo-slot small">unemplyd<span class="dot">.</span></span>
+  <span class="mono">© 2026 unemplyd.</span>
+  <span class="mono dim">// est. 2026 · debugging since birth</span>
+</footer>
+<!-- @@INLINE_END@@ -->
+
+<script src="vendor/three.min.js"></script>
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
+<script src="js/landmask.js"></script>
+<script src="js/media.js"></script>
+<script src="js/logo.js"></script>
+<script src="js/globe.js"></script>
+<script src="js/content.js"></script>
+<script src="js/loader.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
