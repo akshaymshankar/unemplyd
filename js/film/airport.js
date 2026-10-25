@@ -169,12 +169,12 @@
     for (var i = 0; i < 256 * 256; i++) { var v = gn[i]; gi.data[i * 4] = 12 + v * 16; gi.data[i * 4 + 1] = 16 + v * 20; gi.data[i * 4 + 2] = 14 + v * 14; gi.data[i * 4 + 3] = 255; }
     gg.putImageData(gi, 0, 0);
     var gt = srgb(new THREE.CanvasTexture(gc)); gt.wrapS = gt.wrapT = THREE.RepeatWrapping; gt.repeat.set(220, 220);
-    var ground = new THREE.Mesh(new THREE.PlaneGeometry(24000, 24000), new THREE.MeshStandardMaterial({ map: gt, roughness: 0.95, metalness: 0, color: 0x353b38, envMapIntensity: 0.2 }));
+    var ground = new THREE.Mesh(new THREE.PlaneGeometry(24000, 24000), new THREE.MeshStandardMaterial({ map: gt, roughness: 0.95, metalness: 0, color: 0x2a2f2d, envMapIntensity: 0.1 }));
     ground.rotation.x = -Math.PI / 2; ground.position.z = -2000; scene.add(ground);
 
     // runway + markings
     var len = RWY.z0 - RWY.z1;
-    var rmat = new THREE.MeshStandardMaterial({ map: runwayTexture(), roughness: 0.5, metalness: 0.0, envMapIntensity: 0.25, color: 0x8a8d94 });
+    var rmat = new THREE.MeshStandardMaterial({ map: runwayTexture(), roughness: 0.62, metalness: 0.0, envMapIntensity: 0.1, color: 0x6e7178 });
     var rwy = new THREE.Mesh(new THREE.PlaneGeometry(RWY.w + 2 * RWY.shoulder, len), rmat);
     rwy.rotation.x = -Math.PI / 2; rwy.position.set(0, 0.02, (RWY.z0 + RWY.z1) / 2); scene.add(rwy);
     var thr = new THREE.Mesh(new THREE.PlaneGeometry(60, 120), new THREE.MeshStandardMaterial({ map: thresholdTexture(), transparent: true, roughness: 0.5, polygonOffset: true, polygonOffsetFactor: -2, depthWrite: false }));
@@ -224,7 +224,7 @@
 
     // wet-tarmac light pools under edge and centreline lights
     var pg = new THREE.PlaneGeometry(1, 1); pg.rotateX(-Math.PI / 2);
-    var pm = new THREE.MeshBasicMaterial({ map: glowTex, transparent: true, opacity: 0.16, blending: THREE.AdditiveBlending, depthWrite: false, fog: true });
+    var pm = new THREE.MeshBasicMaterial({ map: glowTex, transparent: true, opacity: 0.07, blending: THREE.AdditiveBlending, depthWrite: false, fog: true });
     var pools = [], pc = new THREE.Color();
     for (z = RWY.z0; z >= -1800; z -= 60) [-1, 1].forEach(function (s) { pools.push([s * (RWY.w / 2 + 0.3), z, 5, 26, W]); });
     for (z = RWY.z0 - 7; z >= -1500; z -= 15) pools.push([0.9, z, 2.2, 12, W]);
@@ -303,7 +303,7 @@
 
     // lights for lit materials: cool sky fill, warm low sun bounce from the horizon
     this.hemi = new THREE.HemisphereLight(0x5a6c9c, 0x0c0d10, 0.55); scene.add(this.hemi);
-    this.sun = new THREE.DirectionalLight(0xff9a6a, 0.3); this.sun.position.set(SUN.x * 100, 18, SUN.z * 100); scene.add(this.sun);
+    this.sun = new THREE.DirectionalLight(0xff9a6a, 0.1); this.sun.position.set(SUN.x * 100, 18, SUN.z * 100); scene.add(this.sun);
     this.apronLight = new THREE.PointLight(0xffb070, 1.2, 900, 1.4); this.apronLight.position.set(-380, 40, -700); scene.add(this.apronLight);
   }
 

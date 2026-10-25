@@ -305,7 +305,7 @@
     var cam = this.camera, mv = this._first ? 0 : cam.position.distanceTo(this._lastCam) / Math.max(dt, 1e-3);
     var rot = this._first ? 0 : 2 * Math.acos(Math.min(1, Math.abs(cam.quaternion.dot(this._lastQ)))) / Math.max(dt, 1e-3);
     this._lastCam.copy(cam.position); this._lastQ.copy(cam.quaternion);
-    var k = clamp(mv * 0.0012 + rot * 0.18, 0, 0.45);
+    var k = clamp(mv * 0.0009 + rot * 0.14, 0, 0.28);
     // inside the cloud: everything goes to cloud-white, then darkens to the site's deep space as we punch through
     var white = loc.id === "bridge" ? E.smooth(range(loc.t, 0.28, 0.55)) * 0.94 : 0;
     var wc = this.m.final.uniforms.uWhiteCol.value;
@@ -320,7 +320,8 @@
     var R = this.renderer, rt = this.rt, m = this.m, s = this.size;
     R.setRenderTarget(rt.scene); R.clear(); R.render(this.scene, this.camera);
     // accumulate (frame-rate independent persistence)
-    var kk = this._first ? 0 : Math.pow(k, clamp(dt * 60, 0.5, 3));
+    // trails read as motion blur at a smooth frame rate; on a struggling device they would read as ghost copies, so drop them
+    var kk = this._first || dt > 1 / 24 ? 0 : Math.pow(k, clamp(dt * 60, 0.5, 2));
     m.accum.uniforms.tCur.value = rt.scene.texture; m.accum.uniforms.tPrev.value = rt.b.texture; m.accum.uniforms.uK.value = kk;
     this._pass(m.accum, rt.a);
     var cur = rt.a; rt.a = rt.b; rt.b = cur;               // b now holds this frame

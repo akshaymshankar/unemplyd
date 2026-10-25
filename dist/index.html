@@ -2198,12 +2198,12 @@ window.LOGO_SVG='<svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBo
     for (var i = 0; i < 256 * 256; i++) { var v = gn[i]; gi.data[i * 4] = 12 + v * 16; gi.data[i * 4 + 1] = 16 + v * 20; gi.data[i * 4 + 2] = 14 + v * 14; gi.data[i * 4 + 3] = 255; }
     gg.putImageData(gi, 0, 0);
     var gt = srgb(new THREE.CanvasTexture(gc)); gt.wrapS = gt.wrapT = THREE.RepeatWrapping; gt.repeat.set(220, 220);
-    var ground = new THREE.Mesh(new THREE.PlaneGeometry(24000, 24000), new THREE.MeshStandardMaterial({ map: gt, roughness: 0.95, metalness: 0, color: 0x353b38, envMapIntensity: 0.2 }));
+    var ground = new THREE.Mesh(new THREE.PlaneGeometry(24000, 24000), new THREE.MeshStandardMaterial({ map: gt, roughness: 0.95, metalness: 0, color: 0x2a2f2d, envMapIntensity: 0.1 }));
     ground.rotation.x = -Math.PI / 2; ground.position.z = -2000; scene.add(ground);
 
     // runway + markings
     var len = RWY.z0 - RWY.z1;
-    var rmat = new THREE.MeshStandardMaterial({ map: runwayTexture(), roughness: 0.5, metalness: 0.0, envMapIntensity: 0.25, color: 0x8a8d94 });
+    var rmat = new THREE.MeshStandardMaterial({ map: runwayTexture(), roughness: 0.62, metalness: 0.0, envMapIntensity: 0.1, color: 0x6e7178 });
     var rwy = new THREE.Mesh(new THREE.PlaneGeometry(RWY.w + 2 * RWY.shoulder, len), rmat);
     rwy.rotation.x = -Math.PI / 2; rwy.position.set(0, 0.02, (RWY.z0 + RWY.z1) / 2); scene.add(rwy);
     var thr = new THREE.Mesh(new THREE.PlaneGeometry(60, 120), new THREE.MeshStandardMaterial({ map: thresholdTexture(), transparent: true, roughness: 0.5, polygonOffset: true, polygonOffsetFactor: -2, depthWrite: false }));
@@ -2253,7 +2253,7 @@ window.LOGO_SVG='<svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBo
 
     // wet-tarmac light pools under edge and centreline lights
     var pg = new THREE.PlaneGeometry(1, 1); pg.rotateX(-Math.PI / 2);
-    var pm = new THREE.MeshBasicMaterial({ map: glowTex, transparent: true, opacity: 0.16, blending: THREE.AdditiveBlending, depthWrite: false, fog: true });
+    var pm = new THREE.MeshBasicMaterial({ map: glowTex, transparent: true, opacity: 0.07, blending: THREE.AdditiveBlending, depthWrite: false, fog: true });
     var pools = [], pc = new THREE.Color();
     for (z = RWY.z0; z >= -1800; z -= 60) [-1, 1].forEach(function (s) { pools.push([s * (RWY.w / 2 + 0.3), z, 5, 26, W]); });
     for (z = RWY.z0 - 7; z >= -1500; z -= 15) pools.push([0.9, z, 2.2, 12, W]);
@@ -2332,7 +2332,7 @@ window.LOGO_SVG='<svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBo
 
     // lights for lit materials: cool sky fill, warm low sun bounce from the horizon
     this.hemi = new THREE.HemisphereLight(0x5a6c9c, 0x0c0d10, 0.55); scene.add(this.hemi);
-    this.sun = new THREE.DirectionalLight(0xff9a6a, 0.3); this.sun.position.set(SUN.x * 100, 18, SUN.z * 100); scene.add(this.sun);
+    this.sun = new THREE.DirectionalLight(0xff9a6a, 0.1); this.sun.position.set(SUN.x * 100, 18, SUN.z * 100); scene.add(this.sun);
     this.apronLight = new THREE.PointLight(0xffb070, 1.2, 900, 1.4); this.apronLight.position.set(-380, 40, -700); scene.add(this.apronLight);
   }
 
@@ -2700,7 +2700,7 @@ window.FILM_ASSETS = {
     var cam = this.camera, mv = this._first ? 0 : cam.position.distanceTo(this._lastCam) / Math.max(dt, 1e-3);
     var rot = this._first ? 0 : 2 * Math.acos(Math.min(1, Math.abs(cam.quaternion.dot(this._lastQ)))) / Math.max(dt, 1e-3);
     this._lastCam.copy(cam.position); this._lastQ.copy(cam.quaternion);
-    var k = clamp(mv * 0.0012 + rot * 0.18, 0, 0.45);
+    var k = clamp(mv * 0.0009 + rot * 0.14, 0, 0.28);
     // inside the cloud: everything goes to cloud-white, then darkens to the site's deep space as we punch through
     var white = loc.id === "bridge" ? E.smooth(range(loc.t, 0.28, 0.55)) * 0.94 : 0;
     var wc = this.m.final.uniforms.uWhiteCol.value;
@@ -2715,7 +2715,8 @@ window.FILM_ASSETS = {
     var R = this.renderer, rt = this.rt, m = this.m, s = this.size;
     R.setRenderTarget(rt.scene); R.clear(); R.render(this.scene, this.camera);
     // accumulate (frame-rate independent persistence)
-    var kk = this._first ? 0 : Math.pow(k, clamp(dt * 60, 0.5, 3));
+    // trails read as motion blur at a smooth frame rate; on a struggling device they would read as ghost copies, so drop them
+    var kk = this._first || dt > 1 / 24 ? 0 : Math.pow(k, clamp(dt * 60, 0.5, 2));
     m.accum.uniforms.tCur.value = rt.scene.texture; m.accum.uniforms.tPrev.value = rt.b.texture; m.accum.uniforms.uK.value = kk;
     this._pass(m.accum, rt.a);
     var cur = rt.a; rt.a = rt.b; rt.b = cur;               // b now holds this frame
