@@ -96,12 +96,33 @@
   if (!world) root.classList.add("no-webgl");
   var T = world ? world.target : {};
 
+  /* ---------- intro film (runway → take-off), above the hero ---------- */
+  // needs the globe to hand over to; skipped for reduced motion, no WebGL, or ?nofilm
+  var film = null, filmEl = $("#film"), heroArrived = false;
+  if (filmEl && world && !reduce && window.Film && !/[?&]nofilm\b/.test(location.search)) {
+    filmEl.hidden = false;
+    try {
+      film = new window.Film({
+        exitTo: "top",
+        onCover: function (on) { root.classList.toggle("film-on", on); },
+        onExit: function () { heroArrive(); }
+      });
+    } catch (e) { console.warn(e); film = null; filmEl.hidden = true; }
+  }
+  if (film) root.classList.add("film-on");
+  function heroArrive() {
+    if (heroArrived || !film) return; heroArrived = true;
+    gsap.from(".hero .reveal", { y: 24, opacity: 0, duration: 1, stagger: 0.07, ease: "expo.out", delay: 0.1 });
+    setTimeout(trimMark, 500);
+  }
+
   var hubTag = $("#hubTag");
   var last = performance.now(), running = true, inHero = true;
   function frame(now) {
     var dt = Math.min(0.05, (now - last) / 1000); last = now;
-    if (world && running) {
-      world.update(dt);
+    if (running) {
+      if (film) film.update(dt);
+      if (world && !(film && film.covering)) world.update(dt);   // the globe sleeps while the film covers it
     }
     requestAnimationFrame(frame);
   }
@@ -163,7 +184,8 @@
         if (reduce || !world) return;
         var p = st.progress;
         if (p > 0.01 && landTween) { landTween.kill(); landTween = null; if (!heroLanded) { heroLanded = true; trimMark(); } }
-        if (heroLanded) set({ plane: "runway", planeT: Math.min(1, p * 1.25) });
+        // after the film the jet is already airborne: it carries on climbing out of the hub
+        if (heroLanded) set({ plane: "runway", planeT: film ? 0.62 + 0.38 * Math.min(1, p * 1.25) : Math.min(1, p * 1.25) });
         var H = STATES.hero(), M = STATES.mission(), k = Math.max(0, Math.min(1, (p - 0.3) / 0.7)); k = k * k * (3 - 2 * k);
         set({ scale: lerp(H.scale, M.scale, k), gy: lerp(H.gy, M.gy, k), faceLat: lerp(H.faceLat, M.faceLat, k), faceLon: lerp(H.faceLon, M.faceLon, k), tilt: lerp(H.tilt, M.tilt, k), runway: 1 - k });
         hubTag.style.opacity = Math.max(0, 1 - p * 2.6); hubTag.style.transform = "translate(-50%," + (-p * 60).toFixed(1) + "px)";
@@ -368,6 +390,10 @@
     root.classList.remove("pre");
     root.classList.add("ready");
     if (world) world.planeOn = true;
+    if (film) {
+      set({ plane: "runway", planeT: 0.62 }); world.cur.planeT = 0.62; heroLanded = true;
+      typeMark(); setupScroll(); return;
+    }
     if (!reduce) { gsap.from(".hero .reveal", { y: 24, opacity: 0, duration: 1, stagger: 0.07, ease: "expo.out", delay: 0.15 }); typeMark(); } else finalMark();
     // plane landing
     if (world && !reduce) {
@@ -386,7 +412,10 @@
   }
 
   var fast = false; try { fast = sessionStorage.getItem("unemplyd-loader") === "1"; } catch (e) {}
-  if (reduce) {
+  if (film) {
+    // the film is the opening: no loader, straight onto the runway
+    $("#loader").style.display = "none"; root.classList.remove("pre"); showGlobe(); set({ dots: 1, arcDraw: 1 }); startSite();
+  } else if (reduce) {
     $("#loader").style.display = "none"; root.classList.remove("pre"); showGlobe(); if (world) set({ dots: 1, arcDraw: 1 }); startSite();
   } else {
     var L = new window.Loader({

@@ -531,3 +531,39 @@ body{font-weight:300;letter-spacing:-.01em;font-feature-settings:normal}
 .hero-pin::after{height:34%;background:linear-gradient(0deg,rgba(6,7,10,.5),transparent)}
 .pf-panel,.trace-win,.tour-card{background:rgba(9,11,15,.9);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
 .flap{font-weight:600}
+
+/* ---------- 00 FILM: "Beyond the Horizon" (scroll-controlled opening) ---------- */
+.film{position:relative;z-index:3}
+.film-stage{--bar:1;--barH:calc(min(9svh, max(0px, (100svh - 100vw / 2.39) / 2)) * var(--bar));position:sticky;top:0;height:100svh;overflow:hidden;will-change:opacity}
+.film-canvas{position:absolute;inset:0;display:block;background:#000}
+.film-bars i{position:absolute;left:0;right:0;height:var(--barH);background:#000;pointer-events:none}
+.film-bars i:first-child{top:0} .film-bars i:last-child{bottom:0}
+.film-ui{position:absolute;inset:0;pointer-events:none;color:#F1EFE9}
+.film-slate{position:absolute;left:var(--gl);top:calc(var(--barH) + 20px);margin:0;font-size:11px;letter-spacing:.24em;color:rgba(241,239,233,.62);display:flex;gap:10px}
+.film-slate .sep{color:var(--red)}
+.film-slate.in{animation:film-in 1.4s var(--ease) backwards}
+.film-title{position:absolute;left:50%;top:24%;width:min(92vw,980px);margin:0;translate:-50% 0;text-align:center;text-transform:uppercase;
+  font:600 clamp(20px,3vw,44px)/1.25 var(--display);letter-spacing:.18em;text-shadow:0 2px 30px rgba(0,0,0,.55);opacity:0}
+.film-kicker{position:absolute;left:var(--gl);bottom:calc(var(--barH) + 64px);margin:0;font:500 clamp(18px,2vw,28px)/1.2 var(--display);letter-spacing:-.01em;opacity:0;text-shadow:0 2px 24px rgba(0,0,0,.6)}
+.film-callout{position:absolute;left:50%;bottom:calc(var(--barH) + 22%);translate:-50% 0;margin:0;font-size:clamp(13px,1.2vw,16px);font-weight:600;letter-spacing:.32em;color:#fff;opacity:0;transition:opacity .35s ease;
+  padding:8px 14px 8px 18px;border:1px solid rgba(242,10,20,.75);background:rgba(6,7,10,.35);backdrop-filter:blur(4px)}
+.film-callout::before{content:"";display:inline-block;width:7px;height:7px;margin-right:12px;border-radius:50%;background:var(--red);vertical-align:1px;box-shadow:0 0 12px var(--red)}
+.film-callout.hit{animation:film-hit .5s var(--ease)}
+.film-hud{position:absolute;left:var(--gl);right:var(--gr);bottom:calc(var(--barH) + 22px);margin:0;display:flex;align-items:center;gap:22px;font-size:11px;letter-spacing:.16em;color:rgba(241,239,233,.6)}
+.film-hud > span:first-child{color:var(--red)}
+.film-progress{flex:1;height:1px;background:rgba(241,239,233,.16);max-width:260px;margin-left:auto;margin-right:110px}
+.film-progress i{display:block;height:100%;background:var(--red);transform-origin:0 50%;transform:scaleX(0)}
+.film-hint{position:absolute;left:50%;bottom:calc(var(--barH) + 74px);translate:-50% 0;margin:0;font-size:12px;color:rgba(241,239,233,.55)}
+.film-hint span{display:inline-block;animation:bob 1.8s ease-in-out infinite}
+.film-skip{position:absolute;right:var(--gr);bottom:calc(var(--barH) + 14px);pointer-events:auto;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(241,239,233,.7);
+  background:rgba(6,7,10,.35);border:1px solid rgba(241,239,233,.22);border-radius:999px;padding:7px 14px;cursor:pointer;transition:color .2s,border-color .2s}
+.film-skip:hover{color:#fff;border-color:var(--red)}
+.film-on .nav{opacity:0;transform:translateY(-10px);pointer-events:none}
+@keyframes film-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes film-hit{0%{transform:scale(1.18);border-color:#fff}100%{transform:scale(1)}}
+@media (orientation:portrait){ .film-stage{--barH:calc(4svh * var(--bar))} }
+@media (max-width:767px){
+  .film-title{top:22%;letter-spacing:.12em}
+  .film-hud{gap:12px;font-size:10px} .film-hud > span:nth-child(3){display:none} .film-progress{display:none}
+  .film-kicker{bottom:calc(var(--barH) + 58px)}
+}
